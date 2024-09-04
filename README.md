@@ -1,6 +1,6 @@
 # Qadius-Scanner
 
-**Em desenvolvimento** 
+## **Em Desenvolvimento** 
 
 ## Diretrizes para Contribuição
 
