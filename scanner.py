@@ -4,25 +4,26 @@ import platform
 import ctypes
 import sys
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Caminho para o diretório de regras
 RULES_DIR = "rules/"
-
-# Variáveis globais para controle de escaneamento
-scan_active = True
+cached_rules = None
 
 def load_rules(rules_dir):
-    """Carrega todas as regras Yara do diretório especificado."""
-    rules = {}
-    for rule_file in os.listdir(rules_dir):
-        if rule_file.endswith(".yar") or rule_file.endswith(".yara"):
-            rule_path = os.path.join(rules_dir, rule_file)
-            try:
-                rules[rule_file] = yara.compile(filepath=rule_path)
-                print(f"Carregada a regra: {rule_file}")
-            except yara.SyntaxError as e:
-                print(f"Erro de sintaxe na regra {rule_file}: {e}")
-    return rules
+    """Carrega todas as regras Yara do diretório especificado (cache)."""
+    global cached_rules
+    if cached_rules is None:
+        cached_rules = {}
+        for rule_file in os.listdir(rules_dir):
+            if rule_file.endswith(".yar") or rule_file.endswith(".yara"):
+                rule_path = os.path.join(rules_dir, rule_file)
+                try:
+                    cached_rules[rule_file] = yara.compile(filepath=rule_path)
+                    print(f"Carregada a regra: {rule_file}")
+                except yara.SyntaxError as e:
+                    print(f"Erro de sintaxe na regra {rule_file}: {e}")
+    return cached_rules
 
 def scan_file(file_path, rules):
     """Escaneia um arquivo com as regras carregadas e retorna as correspondências."""
@@ -36,27 +37,35 @@ def scan_file(file_path, rules):
             print(f"Erro ao escanear o arquivo {file_path} com a regra {rule_name}: {e}")
     return matches
 
-def scan_directory(directory, rules, callback=None):
-    """Escaneia um diretório recursivamente e reporta os arquivos suspeitos."""
+def scan_directory_multithreaded(directory, rules, max_workers=4):
+    """Escaneia um diretório recursivamente com múltiplos threads e reporta os arquivos suspeitos."""
     total_files = 0
-    files_with_matches = 0
     match_details = []
 
+    # Coletar todos os arquivos a serem escaneados
+    files_to_scan = []
     for root, dirs, files in os.walk(directory):
-        if not scan_active:
-            break
         for file in files:
             file_path = os.path.join(root, file)
+            files_to_scan.append(file_path)
             total_files += 1
-            matches = scan_file(file_path, rules)
-            if matches:
-                files_with_matches += 1
-                match_details.append((file_path, matches))
-                if callback:
-                    callback(file_path, matches)
-    
+
+    # Usar ThreadPoolExecutor para realizar o escaneamento em paralelo
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(scan_file, file, rules): file for file in files_to_scan}
+
+        for future in as_completed(futures):
+            file_path = futures[future]
+            try:
+                matches = future.result()
+                if matches:
+                    match_details.append((file_path, matches))
+                    print(f"Malware encontrado em {file_path}: {matches}")
+            except Exception as e:
+                print(f"Erro ao processar o arquivo {file_path}: {e}")
+
     # Gerar relatório com detalhes
-    save_report(directory, total_files, files_with_matches, match_details)
+    save_report(directory, total_files, len(match_details), match_details)
 
 def save_report(directory, total_files, files_with_matches, match_details):
     """Salva os resultados do scan em um relatório detalhado."""
@@ -79,6 +88,7 @@ def save_report(directory, total_files, files_with_matches, match_details):
             report.write("Nenhum malware detectado.\n")
 
     print(f"Relatório salvo em: {report_file}")
+
 
 def check_admin():
     """Verifica se o script está sendo executado como administrador."""
@@ -112,6 +122,6 @@ if __name__ == "__main__":
     rules = load_rules(RULES_DIR)
     
     if platform.system() == "Windows":
-        scan_directory("C:\\", rules)
+        scan_directory_multithreaded("C:\\", rules)
     else:
-        scan_directory("/", rules)
+        scan_directory_multithreaded("/", rules)
