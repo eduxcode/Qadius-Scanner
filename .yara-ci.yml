@@ -1,0 +1,9 @@
+branches:
+  accept:
+  - "*development*"
+files:
+  accept:
+  - "**.yar"
+  - "**.yara"
+  ignore:
+  - "ignored_files/**"
