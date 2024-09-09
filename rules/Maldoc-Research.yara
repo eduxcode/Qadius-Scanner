@@ -4,7 +4,7 @@ private rule isRTF
     strings:
         $magic_rtf = /^\s*{\\rt/
     condition:
-        $magic_rtf and filesize &lt; 25MB
+        $magic_rtf and filesize &lt 25MB
 }
 
 rule suspicious_RTF_1 : exploit CVE {
