@@ -1,5 +1,7 @@
 # Qadius Malware Scanner 
 
+---
+
 ## Visão Geral
 
 O **Qadius Malware Scanner** é uma ferramenta para análise e detecção de malwares em arquivos usando regras YARA. Ele foi desenvolvido com Python, utilizando bibliotecas como **Tkinter** para a interface gráfica, **ttkbootstrap** para estilos modernos e **FPDF** para geração de relatórios em PDF. O scanner processa arquivos, identifica possíveis ameaças, e permite gerar um relatório com os resultados da análise.
@@ -10,7 +12,7 @@ O **Qadius Malware Scanner** é uma ferramenta para análise e detecção de mal
 3. Área de exibição dos resultados durante o escaneamento.
 4. O relatório é salvo automaticamente na pasta reports, e o caminho é informado ao usuário.
 
-![Qadius Scanner][Qadius app.png] 
+![Qadius Scanner](Qadius.png)
 
 ### Pré-requisitos
 Para executar o **Qadius Malware Scanner**, você precisará ter as seguintes bibliotecas e ferramentas instaladas no seu ambiente Python:
