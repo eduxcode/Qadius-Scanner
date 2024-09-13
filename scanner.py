@@ -73,6 +73,17 @@ def scan_directory(directory, rules, callback=None):
     # Gera um relatório com os detalhes
     save_report(directory, total_files, files_with_matches, match_details)
 
+def get_recommendation(risk_level):
+        """Retorna uma recomendacao com base no nivel de risco."""
+        if risk_level == "Baixo risco":
+            return "Recomenda-se monitorar este arquivo regurlamente."
+        elif risk_level == "Medio risco":
+            return "Recomenda-se analisar este arquivo mais profundamente e considerar a remocao."
+        elif risk_level == "Alto risco":
+            return "Recomenda-se remover este arquivo imediatamente e investigar possíveis danos."
+        else:
+            return "Sem recomedacoes especificas."
+
 def save_report(directory, total_files, files_with_matches, match_details):
     """Salva os resultados do escaneamento em um relatório PDF."""
     report_dir = "reports"
@@ -106,7 +117,9 @@ def save_report(directory, total_files, files_with_matches, match_details):
             pdf.ln(5)
             pdf.cell(200, 10, txt=f"Arquivo: {file_path}", ln=True)
             for rule_name, match, risk_level in matches:
+                recommendation = get_recommendation(risk_level)
                 pdf.cell(200, 10, txt=f"  - Regra: {rule_name}, Risco: {risk_level}", ln=True)
+                pdf.cell(200, 10, txt=f"    Recomendacoes: {recommendation}", ln=True)
     else:
         pdf.cell(200, 10, txt="Nenhum malware detectado.", ln=True)
 
