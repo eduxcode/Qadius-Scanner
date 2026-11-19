@@ -8,7 +8,7 @@ rule Windows_Trojan_Rhadamanthys_21b60705 {
         threat_name = "Windows.Trojan.Rhadamanthys"
         reference_sample = "3ba97c51ba503fa4bdcfd5580c75436bc88794b4ae883afa1d92bb0b2a0f5efe"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -34,7 +34,7 @@ rule Windows_Trojan_Rhadamanthys_1da1c2c2 {
         threat_name = "Windows.Trojan.Rhadamanthys"
         reference_sample = "9bfc4fed7afc79a167cac173bf3602f9d1f90595d4e41dab68ff54973f2cedc1"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -61,7 +61,7 @@ rule Windows_Trojan_Rhadamanthys_ae00f48c {
         threat_name = "Windows.Trojan.Rhadamanthys"
         reference_sample = "56b5ff5132ec1c5836223ced287d51a9ecee8d2b081f449245e136b1262a8714"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -83,7 +83,7 @@ rule Windows_Trojan_Rhadamanthys_cf5dd2e2 {
         threat_name = "Windows.Trojan.Rhadamanthys"
         reference_sample = "39ccc224c2c6d89d0bce3d9e2c677465cbc7524f2d2aa903f79ad26b340dec3d"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -106,12 +106,32 @@ rule Windows_Trojan_Rhadamanthys_c4760266 {
         threat_name = "Windows.Trojan.Rhadamanthys"
         reference_sample = "05074675b07feb8e7556c5af449f5e677e0fabfb09b135971afbb11743bf3165"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
     strings:
         $a = { 55 8B EC 83 EC 14 83 7D 08 00 53 8B D8 74 50 56 57 8B 7D 0C 6A 10 2B FB 5E 56 8D 45 EC 53 50 ?? ?? ?? ?? ?? 83 C4 0C 90 8B 4D 10 8B C3 2B CB 89 75 FC 8A 14 07 32 10 88 14 01 40 FF 4D FC 75 F2 }
+    condition:
+        all of them
+}
+
+rule Windows_Trojan_Rhadamanthys_baba80fb {
+    meta:
+        author = "Elastic Security"
+        id = "baba80fb-1d8a-424c-98e2-904c8f2e4f09"
+        fingerprint = "71d9345d0288bfbbf7305962e5e316801d4a5cba332c5f4167f8e4f39cff6f61"
+        creation_date = "2024-01-24"
+        last_modified = "2025-02-23"
+        threat_name = "Windows.Trojan.Rhadamanthys"
+        reference_sample = "dd22cb2318d66fa30702368a7f06e445fba4b69daf9c45f8e83562d2c170a073"
+        severity = 50
+        arch_context = "x86, arm64"
+        scan_context = "file, memory"
+        license = "Elastic License v2"
+        os = "windows"
+    strings:
+        $a1 = { 83 EC 0C 8B 4D 0C 53 56 57 8B 59 20 8D 71 20 8B F9 89 75 FC 85 DB 89 7D 0C 75 05 8B 59 24 EB 0C 8D 41 24 89 45 F8 8B 00 85 C0 75 30 8B 51 28 8B 41 2C 85 DB 74 03 89 53 28 85 D2 74 15 }
     condition:
         all of them
 }

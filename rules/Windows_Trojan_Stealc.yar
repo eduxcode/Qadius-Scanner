@@ -8,7 +8,7 @@ rule Windows_Trojan_Stealc_b8ab9ab5 {
         threat_name = "Windows.Trojan.Stealc"
         reference_sample = "0d1c07c84c54348db1637e21260dbed09bd6b7e675ef58e003d0fe8f017fd2c8"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -36,7 +36,7 @@ rule Windows_Trojan_Stealc_a2b71dc4 {
         threat_name = "Windows.Trojan.Stealc"
         reference_sample = "0d1c07c84c54348db1637e21260dbed09bd6b7e675ef58e003d0fe8f017fd2c8"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -59,12 +59,57 @@ rule Windows_Trojan_Stealc_5d3f297c {
         threat_name = "Windows.Trojan.Stealc"
         reference_sample = "885c8cd8f7ad93f0fd43ba4fb7f14d94dfdee3d223715da34a6e2fbb4d25b9f4"
         severity = 50
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
     strings:
         $a1 = { 83 EC 08 C7 45 F8 00 00 00 00 83 7D 08 00 74 4A 83 7D 0C 00 74 44 8B 45 0C 83 C0 01 50 6A 40 ?? ?? ?? ?? ?? ?? 89 45 F8 83 7D F8 00 74 2C C7 45 FC 00 00 00 00 EB 09 8B 4D FC 83 C1 01 }
+    condition:
+        all of them
+}
+
+rule Windows_Trojan_Stealc_41db1d4d {
+    meta:
+        author = "Elastic Security"
+        id = "41db1d4d-d19f-441b-82c3-5ae94ef2baab"
+        fingerprint = "be16274bf7c8fe038b19700aaae47ff0ffcf9cbb98ac93adb7e228c5854b782c"
+        creation_date = "2025-07-16"
+        last_modified = "2025-09-19"
+        threat_name = "Windows.Trojan.Stealc"
+        reference_sample = "a68bc167669c7c98b6742209acea111be61e6002aa652a7b8116af47b284b084"
+        severity = 100
+        arch_context = "x86, arm64"
+        scan_context = "file, memory"
+        license = "Elastic License v2"
+        os = "windows"
+    strings:
+        $a1 = "C:\\builder_v2\\stealc\\json.h" wide fullword
+        $a2 = "%08lX-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX" fullword
+        $a3 = "/c timeout /t 5 & del /f /q \"" fullword
+        $b1 = { 0F B7 C8 81 E9 19 04 00 00 74 14 83 E9 09 74 0F 83 E9 01 74 0A 83 E9 1C 74 05 83 F9 04 75 08 33 C9 FF }
+        $b2 = { 22 74 6F 74 61 6C 5F 70 61 72 74 73 22 3A 20 00 2C 20 00 00 00 00 00 00 22 70 61 72 74 5F 69 6E 64 65 78 22 3A 20 }
+        $b3 = { 48 89 5C 24 10 57 48 83 EC ?? 0F 57 C0 48 8D 3D [3] 00 0F 11 01 48 C7 41 10 00 00 00 00 48 8B D9 48 C7 41 18 0F 00 00 00 C6 01 00 8A 05 [3] 00 EB }
+    condition:
+        3 of them
+}
+
+rule Windows_Trojan_Stealc_df3cdc7e {
+    meta:
+        author = "Elastic Security"
+        id = "df3cdc7e-a9ef-4719-90ce-a45106166f00"
+        fingerprint = "71c93f3ff9248b5d13bd01cfedf2f5999e39689b7553fc606a623a9beca7d281"
+        creation_date = "2026-03-16"
+        last_modified = "2026-05-05"
+        threat_name = "Windows.Trojan.Stealc"
+        reference_sample = "503879c9c294cd7a2b7b13c643b93d8a8e7ae00af5b2b56fcbb90e6c096f40d6"
+        severity = 100
+        arch_context = "x86"
+        scan_context = "file, memory"
+        license = "Elastic License v2"
+        os = "windows"
+    strings:
+        $a = { 48 8B E8 48 8D 48 FF 48 83 F9 ?? ?? ?? ?? ?? ?? 00 48 8D 54 24 48 48 8B C8 FF 15 30 4E 01 00 85 C0 74 52 39 74 24 4C 75 4C 8B 5C 24 48 8D 4E 40 8B D3 FF 15 2F 4E 01 00 48 8B F8 48 85 C0 74 3E }
     condition:
         all of them
 }

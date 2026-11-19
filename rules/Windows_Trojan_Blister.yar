@@ -9,7 +9,7 @@ rule Windows_Trojan_Blister_cb99a1df {
         reference = "https://www.elastic.co/security-labs/elastic-security-uncovers-blister-malware-campaign"
         reference_sample = "0a7778cf6f9a1bd894e89f282f2e40f9d6c9cd4b72be97328e681fe32a1b1a00"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -32,7 +32,7 @@ rule Windows_Trojan_Blister_9d757838 {
         reference = "https://www.elastic.co/security-labs/elastic-security-uncovers-blister-malware-campaign"
         reference_sample = "863de84a39c9f741d8103db83b076695d0d10a7384e4e3ba319c05a6018d9737"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -54,7 +54,7 @@ rule Windows_Trojan_Blister_68b53e1b {
         reference = "https://www.elastic.co/security-labs/elastic-security-uncovers-blister-malware-campaign"
         reference_sample = "5fc79a4499bafa3a881778ef51ce29ef015ee58a587e3614702e69da304395db"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -76,7 +76,7 @@ rule Windows_Trojan_Blister_487b0966 {
         reference = "https://www.elastic.co/security-labs/elastic-security-uncovers-blister-malware-campaign"
         reference_sample = "5fc79a4499bafa3a881778ef51ce29ef015ee58a587e3614702e69da304395db"
         severity = 100
-        arch_context = "x86"
+        arch_context = "x86, arm64"
         scan_context = "file, memory"
         license = "Elastic License v2"
         os = "windows"
@@ -86,5 +86,26 @@ rule Windows_Trojan_Blister_487b0966 {
         $b_loader2 = { 66 45 03 DC 49 83 C2 04 41 0F B7 C3 49 83 C0 02 3B C6 }
     condition:
         2 of them
+}
+
+rule Windows_Trojan_Blister_26f8c5f2 {
+    meta:
+        author = "Elastic Security"
+        id = "26f8c5f2-85db-4fb9-93bc-7d6b28f6f37b"
+        fingerprint = "ebed10e211f6743df6592ecfd6a1c6c878f157fca025928f7999d8fecc546e4b"
+        creation_date = "2024-09-25"
+        last_modified = "2024-10-24"
+        threat_name = "Windows.Trojan.Blister"
+        reference_sample = "cba30fb1731e165acc256d99d32f3c9e5abfa27d152419d24a91d8b79c5c5cb0"
+        severity = 100
+        arch_context = "x86, arm64"
+        scan_context = "file, memory"
+        license = "Elastic License v2"
+        os = "windows"
+    strings:
+        $a = { 41 0F B7 04 40 4D 85 D8 45 3A D4 66 41 89 04 4A 41 84 DE 66 41 39 1C 50 }
+        $b = { 41 FF C1 F9 41 0F B7 04 40 4D 85 D8 45 3A D4 66 41 89 04 4A }
+    condition:
+        any of them
 }
 
