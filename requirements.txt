@@ -1,1 +1,3 @@
-yara-python
+yara-python>=4.5
+fpdf2>=2.7
+ttkbootstrap>=1.10

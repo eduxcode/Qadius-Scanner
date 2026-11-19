@@ -1,93 +1,102 @@
-# Qadius Malware Scanner 
+# Qadius Scanner
 
----
-
-## Visão Geral
-
-O **Qadius Malware Scanner** é uma ferramenta para análise e detecção de malwares em arquivos usando regras YARA. Ele foi desenvolvido com Python, utilizando bibliotecas como **Tkinter** para a interface gráfica, **ttkbootstrap** para estilos modernos e **FPDF** para geração de relatórios em PDF. O scanner processa arquivos, identifica possíveis ameaças, e permite gerar um relatório com os resultados da análise.
-
-### Funcionalidades Principais
-1. Iniciar e parar escaneamento de arquivos.
-2. Barra de progresso que indica o status do escaneamento.
-3. Área de exibição dos resultados durante o escaneamento.
-4. O relatório é salvo automaticamente na pasta reports, e o caminho é informado ao usuário.
+Verificador de malware com regras [YARA](https://virustotal.github.io/yara/). Escolha uma pasta, clique em **Iniciar verificação** e receba a lista de arquivos suspeitos e um relatório em PDF.
 
 ![Qadius Scanner](Qadius.png)
 
-### Pré-requisitos
-Para executar o **Qadius Malware Scanner**, você precisará ter as seguintes bibliotecas e ferramentas instaladas no seu ambiente Python:
+## Como usar
 
-Python 3.x
-- Tkinter (incluso por padrão no Python)
-- ttkbootstrap (pip install ttkbootstrap)
-- FPDF para geração de PDFs (pip install fpdf)
-
-### Instalação de Dependências
-Você pode instalar as dependências necessárias com os seguintes comandos:
 ```bash
-pip install ttkbootstrap fpdf
-```
-
-## Descrição dos Componentes
-
-**interface.py**
-
-Este arquivo contém a lógica da interface gráfica do usuário (GUI) usando Tkinter e ttkbootstrap. A interface permite ao usuário interagir com o scanner, iniciar e parar escaneamentos, visualizar o progresso e gerar relatórios em PDF.
-
-### Componentes da Interface:
-
-- **Botão de Iniciar Escaneamento**: Inicia o processo de escaneamento de arquivos.
-- **Botão de Parar Escaneamento**: Interrompe o escaneamento em andamento.
-- **Barra de Progresso**: Indica visualmente o progresso do escaneamento.
-- **Área de Texto para Resultados**: Exibe os resultados do escaneamento em tempo real.
-
-**Funções Importantes**:
-
-- `start_scan()`: Inicia o processo de escaneamento de arquivos.
-- `stop_scan()`: Interrompe o escaneamento atual.
-- `generate_report()`: Gera um relatório PDF com os resultados do escaneamento e o salva no diretório reports.
-
-**scanner.py**
-
-Este arquivo contém a lógica para realizar o escaneamento utilizando regras YARA. Ele processa os arquivos e retorna os resultados das correspondências encontradas com base nas regras fornecidas.
-
-**Funções**:
-
-- `scan_files()`: Realiza o escaneamento dos arquivos no diretório alvo usando regras YARA.
-- `load_yara_rules()`: Carrega as regras YARA que serão usadas no processo de escaneamento.
-
-**rules/**
-
-Este diretório contém arquivos de regras **YARA** que são utilizados pelo scanner para identificar malwares e outras ameaças.
-
-**reports/**
-
-Os relatórios de escaneamento gerados são salvos automaticamente neste diretório, no formato PDF. O nome do arquivo segue o padrão `malware_report.pdf`.
-
-## Como Usar o Qadius Malware Scanner
-
-1. Inicializar a aplicação: Execute o arquivo `interface.py` para abrir a interface gráfica.
-```bash
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
 python interface.py
 ```
 
-## Erros Comuns e Soluções
+> **Tkinter** vem com o Python no Windows. No macOS (Homebrew) instale com `brew install python-tk`;
+> no Linux, `sudo apt install python3-tk`.
 
-**1. Erro** `Tk.TclError: unknown option "-font"`:
-Esse erro pode ocorrer ao usar a biblioteca *ttk*. O parâmetro `font` não deve ser passado diretamente em widgets ttk como `Button`. Use as opções nativas de estilo ou defina `font` nos widgets Tkinter padrão.
+1. Escolha a pasta (ou um arquivo) em **Pasta…** / **Arquivo…**. O padrão é *Downloads*.
+2. Clique em **Iniciar verificação**. Dá para **Parar** a qualquer momento.
+3. Ameaças aparecem na tabela, ordenadas por risco. Clique duas vezes numa linha para mostrá-la na pasta.
+4. Ao final, um PDF é salvo em `reports/` (botão **Abrir relatório PDF**).
 
-**2. Arquivo PDF não é gerado**:
-Certifique-se de que a pasta `reports` existe ou que o programa tenha permissão para criar o diretório. Caso o erro persista, verifique as permissões de gravação no sistema.
+### Linha de comando
 
-# Considerações Finais
+```bash
+python scanner.py CAMINHO            # imprime detecções e gera PDF
+python scanner.py CAMINHO --no-report
+```
 
-O **Qadius Malware Scanner** é um projeto extensível. Atualmente, a interface foi projetada para ser amigável e funcional, mas você pode personalizá-la e adaptá-la conforme necessário, incluindo novas funcionalidades de escaneamento, integração com outros tipos de regras, ou melhorias no design.
+Código de saída: `0` limpo, `1` ameaças encontradas, `2` erro (ex.: caminho inexistente).
 
-## Diretrizes para Contribuição
+## Regras YARA
 
-Para manter a qualidade e a consistência do código, siga estas diretrizes ao contribuir para o projeto:
+Mais de **1.100 arquivos de regras** em `rules/`, a maioria do repositório público [elastic/protections-artifacts](https://github.com/elastic/protections-artifacts) (famílias recentes de ransomware, stealers, loaders, backdoors e ferramentas ofensivas para Windows, Linux e macOS; as mais novas são de outubro/2026), além de regras da comunidade (ex.: `win_*.yara`).
 
-- **Código Limpo e Bem Documentado**: Escreva código que seja fácil de ler e mantenha a documentação atualizada.
-- **Testes**: Sempre que possível, adicione testes para as novas funcionalidades ou correções de bugs.
-- **Commits Granulares**: Faça commits pequenos e focados, que sejam fáceis de entender e reverter, se necessário.
-- **Respeite o Estilo do Código**: Siga o estilo de codificação PEP8 para Python e quaisquer outras convenções definidas no projeto. 
+- As regras da Elastic estão sob a **Elastic License 2.0** (veja `LICENSE-ELASTIC-RULES.txt`). Mantenha o aviso ao redistribuir.
+- Para atualizar: copie os `.yar` novos do upstream para `rules/` e rode `python -m pytest`. O teste `test_shipped_rules_all_compile_except_known` avisa se alguma regra não compilar.
+- Três arquivos são ignorados de propósito por dependerem de módulos ausentes: `malrtf.yara`, `win_geodo.yara` e `win_plugx.yara`.
+
+## Como o risco é calculado
+
+Cada regra YARA traz uma `severity` (1–100) nos metadados:
+
+| Severidade | Risco |
+|-----------:|-------|
+| 80–100     | **Alto** |
+| 40–79      | **Médio** (também usado quando a regra não informa severidade) |
+| 1–39       | **Baixo** (ex.: arquivo de teste EICAR) |
+
+Regras com as tags `info`, `statistics` e `feature` (tipo de arquivo, compilador, entropia, heurísticas genéricas de capacidade) apenas descrevem o arquivo e são ignoradas: casavam com software legítimo e não indicam ameaça.
+
+Regras que não compilam (ex.: dependem de módulos ausentes) são puladas sem interromper o resto; veja `RuleSet.skipped`.
+
+## Estrutura
+
+| Arquivo | Função |
+|---------|--------|
+| `interface.py` | Interface gráfica (Tkinter + ttkbootstrap) |
+| `scanner.py` | Motor de verificação e CLI, sem dependência da interface |
+| `report.py` | Geração do relatório PDF |
+| `rules/` | Regras YARA (`.yar` / `.yara`) |
+| `tests/` | Testes automatizados |
+
+## Testes
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Os testes usam o [EICAR](https://www.eicar.org/), um texto de teste padrão e inofensivo que todo antivírus detecta, gerado em pastas temporárias e apenas lido (nada é executado). Cobrem arquivo puro, embutido em texto, zip/tar/gz (e aninhados), zip bombs e arquivos corrompidos. Nenhum malware real é usado. Os testes de interface são pulados automaticamente se não houver Tkinter ou tela disponível.
+
+## Gerar o executável
+
+```bash
+pip install -r requirements.txt pyinstaller
+python packaging/build.py
+```
+
+O resultado fica em `dist/` (`Qadius Scanner.app` no macOS, pasta com `Qadius Scanner.exe` no Windows). O PyInstaller **não faz build cruzado**: gere cada versão no próprio sistema. No app empacotado os relatórios são salvos em `Documentos/Qadius Scanner`.
+
+Para validar um executável sem abrir a janela:
+
+```bash
+"dist/Qadius Scanner.app/Contents/MacOS/Qadius Scanner" --self-test     # macOS
+"dist\Qadius Scanner\Qadius Scanner.exe" --self-test                    # Windows
+```
+
+> **macOS:** o app é assinado de forma "ad-hoc" (sem conta de desenvolvedor Apple). Ao abrir em outro Mac, o Gatekeeper avisa que o desenvolvedor não foi verificado: clique com o botão direito no app → **Abrir**. O build gerado numa Mac com chip Apple só roda em chip Apple (arm64).
+
+## Arquivos compactados
+
+O scanner olha **dentro** de `.zip`, `.tar`, `.tar.gz`/`.tgz` e `.gz`, inclusive um dentro do outro (até 3 níveis). O formato é identificado pelo conteúdo, não pela extensão. Há limites contra "zip bombs": itens acima de 50 MB, mais de 500 MB descompactados por arquivo ou mais de 10.000 itens são ignorados.
+
+## Limitações
+
+- A detecção é baseada em assinaturas YARA: não substitui um antivírus completo, e "nenhuma ameaça" não prova que o computador está limpo.
+- Não são abertos: arquivos com senha, `.rar`, `.7z`, `.bz2`, `.xz`, `.dmg`, `.iso`, instaladores, e compactados com mais de 3 níveis. Itens grandes demais dentro de um compactado são ignorados sem aviso.
+- Conteúdo codificado (Base64, UTF-16) e assinaturas coladas em outras letras podem não ser reconhecidos (testes `known_gaps`).
+- Sem proteção em tempo real: só verifica quando você manda.
+- Links simbólicos não são seguidos; arquivos acima de 200 MB são pulados e contados no relatório.
